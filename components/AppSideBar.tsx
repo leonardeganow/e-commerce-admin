@@ -1,15 +1,19 @@
 "use client";
+
 import {
   Calendar,
   ChevronDown,
   ChevronUp,
   Home,
-  Inbox,
-  Search,
   Settings,
   User2,
+  BarChart,
+  Users,
+  ShoppingCart,
+  MessageSquare,
 } from "lucide-react";
 import Cookies from "js-cookie";
+import Image from "next/image";
 
 import {
   Sidebar,
@@ -28,36 +32,43 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import useUserStore from "@/store/userDataStore";
 import { useRouter } from "next/navigation";
 
 // Menu items.
 const items = [
   {
-    title: "Home",
-    url: "#",
+    title: "Dashboard",
+    url: "/dashboard/home",
     icon: Home,
   },
   {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
+    title: "Orders",
+    url: "/dashboard/orders",
+    icon: ShoppingCart,
   },
   {
-    title: "Calendar",
-    url: "#",
+    title: "Products",
+    url: "/dashboard/products",
     icon: Calendar,
   },
   {
-    title: "Search",
-    url: "#",
-    icon: Search,
+    title: "Customers",
+    url: "/dashboard/customers",
+    icon: Users,
   },
   {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
+    title: "Marketing",
+    url: "/dashboard/marketing",
+    icon: MessageSquare,
+  },
+  {
+    title: "Reports",
+    url: "/dashboard/reports",
+    icon: BarChart,
   },
 ];
 
@@ -70,40 +81,36 @@ export function AppSidebar() {
     clearUserData();
     router.push("/");
   };
+
   return (
-    <Sidebar>
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
-                  Select Workspace
-                  <ChevronDown className="ml-auto" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[--radix-popper-anchor-width]">
-                <DropdownMenuItem>
-                  <span>Acme Inc</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Acme Corp.</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
+    <Sidebar className="border-r">
+      <SidebarHeader className="p-4">
+        <div className="flex items-center space-x-2">
+          <Image
+            src="/logo.svg"
+            alt="Company Logo"
+            width={32}
+            height={32}
+            className="rounded-md"
+          />
+          <span className="text-lg font-bold">Your Company</span>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel className="px-4 py-2 text-xs font-semibold text-muted-foreground">
+            MAIN MENU
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    asChild
+                    className="flex items-center space-x-3 rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted hover:text-primary"
+                  >
                     <a href={item.url}>
-                      <item.icon />
+                      <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
                     </a>
                   </SidebarMenuButton>
@@ -114,33 +121,41 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
-                  <User2 /> {userData?.name}
-                  <ChevronUp className="ml-auto" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="top"
-                className="w-[--radix-popper-anchor-width]"
-              >
-                <DropdownMenuItem>
-                  <span>Account</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Billing</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={logOut}>
-                  <span>Sign out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
+      <SidebarFooter className="border-t p-4">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="w-full justify-start px-2">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback>
+                  {userData?.name?.charAt(0) || "U"}
+                </AvatarFallback>
+              </Avatar>
+              <span className="ml-2 flex-grow text-left">{userData?.name}</span>
+              <ChevronUp className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="start"
+            alignOffset={-8}
+            className="w-[200px] p-2"
+          >
+            <DropdownMenuItem className="cursor-pointer">
+              <User2 className="mr-2 h-4 w-4" />
+              <span>Account</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Settings</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer text-red-600"
+              onClick={logOut}
+            >
+              <ChevronDown className="mr-2 h-4 w-4" />
+              <span>Sign out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </SidebarFooter>
     </Sidebar>
   );

@@ -9,7 +9,7 @@ import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import useUserStore from "@/store/userDataStore";
-import { DEV_SERVER_URL } from "../constants";
+import { DEV_SERVER_URL } from "../../app/constants";
 import {
   Card,
   CardContent,
