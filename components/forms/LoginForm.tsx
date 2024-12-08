@@ -43,15 +43,17 @@ export default function LoginForm() {
   const onSubmit = async (data: FormData) => {
     try {
       setIsLoading(true);
-      const response = await axios.post(`${DEV_SERVER_URL}/auth/login`, {...data, role: "admin"});
+      const response = await axios.post(`${DEV_SERVER_URL}/auth/login`, {
+        ...data,
+        role: "admin",
+      });
       setIsLoading(false);
-      console.log(response);
-      
+
       if (response) {
         setUserData(response.data.user);
         Cookies.set("authToken", response.data.accessToken, { expires: 7 });
         // Redirect to the original page or to the home page if no redirect param
-        router.push(redirectUrl || "/dashboard");
+        router.push(redirectUrl || "/dashboard/home");
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
