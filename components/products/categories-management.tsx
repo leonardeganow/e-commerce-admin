@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -12,12 +12,16 @@ import { Button } from "@/components/ui/button";
 import { PencilIcon, PlusIcon } from "lucide-react";
 import { CategoryModal } from "./category-modal";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Category } from "@/types/global";
+import { Category, Product } from "@/types/global";
 import axios from "axios";
 import { DEV_SERVER_URL } from "@/app/constants";
 import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from "../ui/skeleton";
 
-export function CategoriesManagement() {
+interface CatgoriesManagementProps {
+  setProduct: (product: Product | undefined) => void;
+}
+export function CategoriesManagement(props: CatgoriesManagementProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<
@@ -176,6 +180,50 @@ export function CategoriesManagement() {
     setIsModalOpen(false);
   };
 
+  useEffect(() => {
+    props.setProduct(undefined);
+  }, [props]);
+
+  if (isLoading) {
+    return (
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>
+              <Skeleton className="h-4 w-10"></Skeleton>
+            </TableHead>
+            <TableHead>
+              <Skeleton className="h-4 w-10"></Skeleton>
+            </TableHead>
+            <TableHead>
+              <Skeleton className="h-4 w-10"></Skeleton>
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {new Array(5).fill(0).map((item, i) => {
+            return (
+              <TableRow key={i}>
+                <TableCell>
+                  <Skeleton className="h-4 w-40"></Skeleton>
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-4 w-10"></Skeleton>
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-4 w-10"></Skeleton>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    );
+  }
+
+  if (isError) {
+    return <p className="text-red-500">Failed to load categories</p>;
+  }
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -185,45 +233,34 @@ export function CategoriesManagement() {
         </Button>
       </div>
 
-      {isLoading ? (
-        <p>Loading...</p> // Replace with a spinner or loader component
-      ) : isError ? (
-        <p className="text-red-500">Failed to load categories</p>
-      ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Category Name</TableHead>
-              <TableHead>Actions</TableHead>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Category Name</TableHead>
+            <TableHead>Products Count</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {categories?.map((category) => (
+            <TableRow key={category._id}>
+              <TableCell>{category.name}</TableCell>
+              <TableCell>{category.productsCount}</TableCell>
+              <TableCell>
+                <div className="space-x-1">
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    onClick={() => handleOpenModal(category)}
+                  >
+                    <PencilIcon className="h-4 w-4" />
+                  </Button>
+                </div>
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {categories?.map((category) => (
-              <TableRow key={category._id}>
-                <TableCell>{category.name}</TableCell>
-                <TableCell>
-                  <div className="space-x-1">
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      onClick={() => handleOpenModal(category)}
-                    >
-                      <PencilIcon className="h-4 w-4" />
-                    </Button>
-                    {/* <Button
-                      size="icon"
-                      variant="outline"
-                      onClick={() => handleOpenModal(category)}
-                    >
-                      <Trash2Icon className="h-4 w-4 ml text-red-500" />
-                    </Button> */}
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      )}
+          ))}
+        </TableBody>
+      </Table>
 
       <CategoryModal
         isOpen={isModalOpen}

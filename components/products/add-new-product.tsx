@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import { useDropzone } from "react-dropzone";
+// import { useDropzone } from "react-dropzone";
 
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -29,7 +29,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import { DEV_SERVER_URL } from "@/app/constants";
-import { Category } from "@/types/global";
+import { Category, Product } from "@/types/global";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
 
@@ -52,20 +52,25 @@ const formSchema = z.object({
   category: z.string().min(1, {
     message: "Please select a category.",
   }),
-  image: z
-    .any()
-    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
-    .refine(
-      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-      "Only .jpg, .png, and .webp formats are supported."
-    ),
+  // image: z.string(),
+  image: z.any(),
+  // .refine((file) => file?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
+  // .refine(
+  //   (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+  //   "Only .jpg, .png, and .webp formats are supported."
+  // ),
   colors: z.array(z.string()).optional(),
   sizes: z.array(z.string()).optional(),
 });
 
-export function AddProductForm() {
-  const [colors, setColors] = useState<string[]>([]);
-  const [sizes, setSizes] = useState<string[]>([]);
+interface AddEditProductFormProps {
+  product: Product | undefined;
+  setProduct: (product: undefined) => void;
+}
+
+export function AddEditProductForm(props: AddEditProductFormProps) {
+  const [colors, setColors] = useState<string[] | undefined>([]);
+  const [sizes, setSizes] = useState<string[] | undefined>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -109,48 +114,88 @@ export function AddProductForm() {
   }
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
+
     try {
-      const productData = {
-        name: values.name,
-        description: values.description,
-        price: values.price,
-        currency: values.currency,
-        stock: values.stock,
-        featured: values.featured,
-        categoryId: values.category,
-        image: imagePreview,
-        colors: colors,
-        sizes: sizes,
-      };
+      if (props.product) {
+        const productData = {
+          name: values.name,
+          description: values.description,
+          price: values.price,
+          currency: values.currency,
+          stock: values.stock,
+          featured: values.featured,
+          categoryId: values.category,
+          image: imagePreview || values.image,
+          colors: colors,
+          sizes: sizes,
+        };
+        const response = await axios.put(
+          `${DEV_SERVER_URL}/product/products/${props.product._id}`,
+          productData
+        );
 
-      const response = await axios.post(
-        `${DEV_SERVER_URL}/product/addproduct`,
-        productData
-      );
+        if (response.status === 200) {
+          setIsLoading(false);
+          form.reset();
+          setColors([]);
+          setSizes([]);
+          setImagePreview(null);
+          props.setProduct(undefined);
+          const fileInput = document.querySelector(
+            'input[type="file"]'
+          ) as HTMLInputElement;
+          if (fileInput) {
+            fileInput.value = "";
+          }
 
-      setIsLoading(true);
-
-      if (response.status === 201) {
-        setIsLoading(false);
-        form.reset();
-        setColors([]);
-        setSizes([]);
-        setImagePreview(null);
-        const fileInput = document.querySelector(
-          'input[type="file"]'
-        ) as HTMLInputElement;
-        if (fileInput) {
-          fileInput.value = ""; // This will clear the file input field
+          toast({
+            title: "Product updated successfully",
+            description: response?.data.message,
+          });
         }
+      } else {
+        const productData = {
+          name: values.name,
+          description: values.description,
+          price: values.price,
+          currency: values.currency,
+          stock: values.stock,
+          featured: values.featured,
+          categoryId: values.category,
+          image: imagePreview,
+          colors: colors,
+          sizes: sizes,
+        };
 
-        toast({
-          title: "Product added successfully",
-          description: response?.data.message,
-        });
+        const response = await axios.post(
+          `${DEV_SERVER_URL}/product/addproduct`,
+          productData
+        );
+
+        setIsLoading(true);
+
+        if (response.status === 201) {
+          setIsLoading(false);
+          form.reset();
+          setColors([]);
+          setSizes([]);
+          setImagePreview(null);
+          const fileInput = document.querySelector(
+            'input[type="file"]'
+          ) as HTMLInputElement;
+          if (fileInput) {
+            fileInput.value = "";
+          }
+
+          toast({
+            title: "Product added successfully",
+            description: response?.data.message,
+          });
+        }
       }
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      setIsLoading(true);
       console.error(error);
       setIsLoading(false);
       toast({
@@ -202,6 +247,26 @@ export function AddProductForm() {
       setImagePreview(null);
     }
   };
+  const categoryWatch = form.watch("category");
+  useEffect(() => {
+    if (props?.product) {
+      form.setValue("name", props.product.name);
+      form.setValue("description", props.product.description);
+      form.setValue("price", props.product.price);
+      form.setValue("currency", props.product.currency);
+      form.setValue("stock", props.product.stock);
+      form.setValue("featured", props.product.featured);
+
+      form.setValue("category", props.product.category);
+      form.setValue("colors", props.product.colors);
+      form.setValue("sizes", props.product.sizes);
+      form.setValue("image", props.product.image);
+      setColors(props.product.colors);
+      setSizes(props.product.sizes);
+
+      setImagePreview(props.product.image);
+    }
+  }, [form, props.product, categoryWatch]);
 
   useEffect(() => {
     getCategories();
@@ -382,6 +447,16 @@ export function AddProductForm() {
                       className="mt-2 max-w-xs rounded-md"
                     />
                   )}
+
+                  {/* {props?.product?.image && (
+                    <Image
+                      src={props.product.image}
+                      alt=""
+                      width={200}
+                      height={200}
+                      className="mt-2 max-w-xs rounded-md"
+                    />
+                  )} */}
                   <FormMessage />
                 </FormItem>
               )}
@@ -390,7 +465,7 @@ export function AddProductForm() {
               <FormLabel>Colors</FormLabel>
               <FormControl>
                 <div className="flex flex-wrap gap-2">
-                  {colors.map((color, index) => (
+                  {colors?.map((color, index) => (
                     <div key={index} className="bg-gray-200 px-2 py-1 rounded">
                       {color}
                       <button
@@ -416,7 +491,7 @@ export function AddProductForm() {
               <FormLabel>Sizes</FormLabel>
               <FormControl>
                 <div className="flex flex-wrap gap-2">
-                  {sizes.map((size, index) => (
+                  {sizes?.map((size, index) => (
                     <div key={index} className="bg-gray-200 px-2 py-1 rounded">
                       {size}
                       <button
@@ -446,6 +521,8 @@ export function AddProductForm() {
               <Loader2 className="animate-spin h-2 w-2" />
               loading
             </span>
+          ) : props.product ? (
+            "Edit Product"
           ) : (
             "Add Product"
           )}

@@ -1,13 +1,15 @@
 "use client";
 
-import { AddProductForm } from "@/components/products/add-new-product";
+import { AddEditProductForm } from "@/components/products/add-new-product";
 import { AllProducts } from "@/components/products/all-products";
 import { CategoriesManagement } from "@/components/products/categories-management";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Product } from "@/types/global";
 import { useState } from "react";
 
 export default function ProductsPage() {
   const [activeTab, setActiveTab] = useState("all-products");
+  const [product, setProduct] = useState<Product | undefined>();
 
   return (
     <div className="container mx-auto p-10">
@@ -19,7 +21,9 @@ export default function ProductsPage() {
       >
         <TabsList>
           <TabsTrigger value="all-products">All Products</TabsTrigger>
-          <TabsTrigger value="add-new-product">Add New Product</TabsTrigger>
+          <TabsTrigger value="add/edit-new-product">
+            Add/Edit New Product
+          </TabsTrigger>
           {/* <TabsTrigger value="low-stock-alerts">Low Stock Alerts</TabsTrigger> */}
           <TabsTrigger value="categories-management">
             Categories Management
@@ -27,16 +31,16 @@ export default function ProductsPage() {
           {/* <TabsTrigger value="product-bundling">Product Bundling</TabsTrigger> */}
         </TabsList>
         <TabsContent value="all-products">
-          <AllProducts />
+          <AllProducts setActiveTab={setActiveTab} setProduct={setProduct} product={product} />
         </TabsContent>
-        <TabsContent value="add-new-product">
-          <AddProductForm />
+        <TabsContent value="add/edit-new-product">
+          <AddEditProductForm product={product} setProduct={setProduct}/>
         </TabsContent>
         {/* <TabsContent value="low-stock-alerts">
           <LowStockAlerts />
         </TabsContent> */}
         <TabsContent value="categories-management">
-          <CategoriesManagement />
+          <CategoriesManagement setProduct={setProduct}/>
         </TabsContent>
         {/* <TabsContent value="product-bundling">
           <ProductBundling />
