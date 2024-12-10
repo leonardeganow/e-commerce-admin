@@ -29,6 +29,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Product } from "@/types/global";
 import { Skeleton } from "../ui/skeleton";
+import { Card, CardContent } from "../ui/card";
 
 interface AllProductsProps {
   product: Product | undefined;
@@ -160,73 +161,78 @@ export function AllProducts(props: AllProductsProps) {
         />
         <Button>Export to CSV</Button>
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Stock</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredProducts?.map((product: Product) => (
-            <TableRow key={product._id}>
-              <TableCell>{product.name}</TableCell>
-              <TableCell>{product.categoryName}</TableCell>
-              <TableCell>
-                {product.currency === "GHS" && "₵"}
-                {product.price.toFixed(2)}
-              </TableCell>
-              <TableCell>{product.stock}</TableCell>
-              <TableCell>
-                <div className="flex space-x-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      props.setProduct(product);
-                      props.setActiveTab("add/edit-new-product");
-                    }}
-                  >
-                    <PencilIcon className="h-4 w-4" />
-                  </Button>
 
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="outline">
-                        {" "}
-                        <TrashIcon className="h-4 w-4" />
+      <Card>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Stock</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredProducts?.map((product: Product) => (
+                <TableRow key={product._id}>
+                  <TableCell>{product.name}</TableCell>
+                  <TableCell>{product.categoryName}</TableCell>
+                  <TableCell>
+                    {product.currency === "GHS" && "₵"}
+                    {product.price.toFixed(2)}
+                  </TableCell>
+                  <TableCell>{product.stock}</TableCell>
+                  <TableCell>
+                    <div className="flex space-x-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          props.setProduct(product);
+                          props.setActiveTab("add/edit-new-product");
+                        }}
+                      >
+                        <PencilIcon className="h-4 w-4" />
                       </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you absolutely sure?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone. This will permanently
-                          delete the product.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          disabled={loading}
-                          onClick={() => deleteProducts(product._id)}
-                        >
-                          {loading ? "deleteing..." : "Continue "}
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="outline">
+                            {" "}
+                            <TrashIcon className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Are you absolutely sure?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will
+                              permanently delete the product.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              disabled={loading}
+                              onClick={() => deleteProducts(product._id)}
+                            >
+                              {loading ? "deleteing..." : "Continue "}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 }

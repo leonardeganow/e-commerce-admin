@@ -53,7 +53,7 @@ export default function LoginForm() {
         setUserData(response.data.user);
         Cookies.set("authToken", response.data.accessToken, { expires: 7 });
         // Redirect to the original page or to the home page if no redirect param
-        router.push(redirectUrl || "/dashboard/home");
+        router.push(redirectUrl || "/dashboard");
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

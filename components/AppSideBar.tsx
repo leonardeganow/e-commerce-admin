@@ -13,7 +13,6 @@ import {
   MessageSquare,
 } from "lucide-react";
 import Cookies from "js-cookie";
-import Image from "next/image";
 
 import {
   Sidebar,
@@ -36,19 +35,27 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import useUserStore from "@/store/userDataStore";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 
 // Menu items.
 const items = [
   {
     title: "Dashboard",
-    url: "/dashboard/home",
+    url: "/dashboard",
     icon: Home,
   },
   {
     title: "Orders",
     url: "/dashboard/orders",
     icon: ShoppingCart,
+    items: [
+      "All Orders",
+      "Pending Orders",
+      "Fulfilled Orders",
+      "Returns & Cancellations",
+      "Manage Shipping Labels",
+    ],
   },
   {
     title: "Products",
@@ -75,6 +82,7 @@ const items = [
 export function AppSidebar() {
   const { userData, clearUserData } = useUserStore();
   const router = useRouter();
+  const pathname = usePathname();
 
   const logOut = () => {
     Cookies.remove("authToken");
@@ -86,14 +94,14 @@ export function AppSidebar() {
     <Sidebar className="border-r">
       <SidebarHeader className="p-4">
         <div className="flex items-center space-x-2">
-          <Image
+          {/* <Image
             src="/logo.svg"
             alt="Company Logo"
             width={32}
             height={32}
             className="rounded-md"
-          />
-          <span className="text-lg font-bold">Your Company</span>
+          /> */}
+          <span className="text-lg font-bold">Admin</span>
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -107,12 +115,16 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
-                    className="flex items-center space-x-3 rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted hover:text-primary"
+                    className={`${
+                      pathname === item.url
+                        ? "flex items-center space-x-3 rounded-md px-3 py-6 text-sm transition-colors hover:bg-cyan-200 hover:text-primary bg-cyan-500 text-white"
+                        : "flex items-center space-x-3 rounded-md px-3 py-6 text-sm transition-colors hover:bg-cyan-200 hover:text-primary"
+                    } `}
                   >
-                    <a href={item.url}>
-                      <item.icon className="h-4 w-4" />
+                    <Link href={item.url}>
+                      <item.icon className="h-10 w-10" />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

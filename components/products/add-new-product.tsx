@@ -428,7 +428,7 @@ export function AddEditProductForm(props: AddEditProductFormProps) {
                   <FormLabel>Product Image</FormLabel>
                   <FormControl>
                     <Input
-                      ref={fileInputRef}
+                      // ref={fileInputRef}
                       type="file"
                       accept="image/*"
                       onChange={(e) => {
@@ -448,15 +448,6 @@ export function AddEditProductForm(props: AddEditProductFormProps) {
                     />
                   )}
 
-                  {/* {props?.product?.image && (
-                    <Image
-                      src={props.product.image}
-                      alt=""
-                      width={200}
-                      height={200}
-                      className="mt-2 max-w-xs rounded-md"
-                    />
-                  )} */}
                   <FormMessage />
                 </FormItem>
               )}
