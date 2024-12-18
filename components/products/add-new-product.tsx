@@ -54,13 +54,13 @@ const formSchema = z.object({
   }),
   // image: z.string(),
   image: z.any(),
-  // .refine((file) => file?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
-  // .refine(
-  //   (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-  //   "Only .jpg, .png, and .webp formats are supported."
-  // ),
-  colors: z.array(z.string()).optional(),
-  sizes: z.array(z.string()).optional(),
+
+  colors: z
+    .array(z.string())
+    .nonempty({ message: "At least one color is required." }),
+  sizes: z
+    .array(z.string())
+    .nonempty({ message: "At least one size is required." }),
 });
 
 interface AddEditProductFormProps {
@@ -112,6 +112,7 @@ export function AddEditProductForm(props: AddEditProductFormProps) {
       });
     }
   }
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
 
@@ -477,6 +478,7 @@ export function AddEditProductForm(props: AddEditProductFormProps) {
                   />
                 </div>
               </FormControl>
+              <FormMessage />
             </FormItem>
             <FormItem>
               <FormLabel>Sizes</FormLabel>
@@ -503,6 +505,7 @@ export function AddEditProductForm(props: AddEditProductFormProps) {
                   />
                 </div>
               </FormControl>
+              <FormMessage />
             </FormItem>
           </div>
         </div>

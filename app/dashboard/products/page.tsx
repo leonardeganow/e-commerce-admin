@@ -31,16 +31,20 @@ export default function ProductsPage() {
           {/* <TabsTrigger value="product-bundling">Product Bundling</TabsTrigger> */}
         </TabsList>
         <TabsContent value="all-products">
-          <AllProducts setActiveTab={setActiveTab} setProduct={setProduct} product={product} />
+          <AllProducts
+            setActiveTab={setActiveTab}
+            setProduct={setProduct}
+            product={product}
+          />
         </TabsContent>
         <TabsContent value="add/edit-new-product">
-          <AddEditProductForm product={product} setProduct={setProduct}/>
+          <AddEditProductForm product={product} setProduct={setProduct} />
         </TabsContent>
         {/* <TabsContent value="low-stock-alerts">
           <LowStockAlerts />
         </TabsContent> */}
         <TabsContent value="categories-management">
-          <CategoriesManagement setProduct={setProduct}/>
+          <CategoriesManagement setProduct={setProduct} />
         </TabsContent>
         {/* <TabsContent value="product-bundling">
           <ProductBundling />

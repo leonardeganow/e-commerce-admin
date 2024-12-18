@@ -1,16 +1,28 @@
+"use client";
 import { DateRangePicker } from "@/components/dashboardHome/date-range-picker";
 import { Overview } from "@/components/dashboardHome/overview";
 import { RecentOrders } from "@/components/dashboardHome/recet-orders";
 import { UserSignups } from "@/components/dashboardHome/user-signups";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useGetDashboardData } from "@/hooks/dashboardHook";
+import { useState } from "react";
+import { moneyFormatter } from "../utils";
+import { Loader2 } from "lucide-react";
 
 export default function DashboardPage() {
+  const [date, setDate] = useState({
+    from: new Date(2024, 0, 20),
+    to: new Date(2024, 0, 20),
+  });
+
+  const [cardsData] = useGetDashboardData(date);
+
   return (
     <div className="flex-1 space-y-4 p-10   w-full">
       <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
       <div className="flex items-center justify-between space-y-2">
         <div className="flex items-center space-x-2">
-          <DateRangePicker />
+          <DateRangePicker setDate={setDate} date={date} />
         </div>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -32,12 +44,22 @@ export default function DashboardPage() {
               <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
             </svg>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">10,482</div>
-            <p className="text-xs text-muted-foreground">
-              +2.1% from last month
-            </p>
-          </CardContent>
+          {cardsData?.isLoading ? (
+            <CardContent>
+              <Loader2 className="animate-spin h-5 w-5" />
+            </CardContent>
+          ) : cardsData?.isError ? (
+            <CardContent>- </CardContent>
+          ) : (
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {cardsData?.data?.totalUsers}
+              </div>
+              {/* <p className="text-xs text-muted-foreground">
+                +2.1% from last month
+              </p> */}
+            </CardContent>
+          )}
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -55,12 +77,22 @@ export default function DashboardPage() {
               <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
             </svg>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">$45,231.89</div>
-            <p className="text-xs text-muted-foreground">
-              +20.1% from last month
-            </p>
-          </CardContent>
+          {cardsData?.isLoading ? (
+            <CardContent>
+              <Loader2 className="animate-spin h-5 w-5" />
+            </CardContent>
+          ) : cardsData?.isError ? (
+            <CardContent>- </CardContent>
+          ) : (
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {moneyFormatter.format(cardsData?.data?.totalRevenue)}
+              </div>
+              {/* <p className="text-xs text-muted-foreground">
+                +20.1% from last month
+              </p> */}
+            </CardContent>
+          )}
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -79,16 +111,30 @@ export default function DashboardPage() {
               <path d="M2 10h20" />
             </svg>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+12,234</div>
-            <p className="text-xs text-muted-foreground">
-              +19% from last month
-            </p>
-          </CardContent>
+          {cardsData?.isLoading ? (
+            <CardContent>
+              <Loader2 className="animate-spin h-5 w-5" />
+            </CardContent>
+          ) : cardsData?.isError ? (
+            <CardContent>- </CardContent>
+          ) : (
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {cardsData?.data?.totalSales === 0
+                  ? `${cardsData?.data?.totalSales}`
+                  : `+${cardsData?.data?.totalSales}`}
+              </div>
+              {/* <p className="text-xs text-muted-foreground">
+                +19% from last month
+              </p> */}
+            </CardContent>
+          )}
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Now</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Products
+            </CardTitle>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -102,12 +148,22 @@ export default function DashboardPage() {
               <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
             </svg>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+573</div>
-            <p className="text-xs text-muted-foreground">
-              +201 since last hour
-            </p>
-          </CardContent>
+          {cardsData?.isLoading ? (
+            <CardContent>
+              <Loader2 className="animate-spin h-5 w-5" />
+            </CardContent>
+          ) : cardsData?.isError ? (
+            <CardContent>- </CardContent>
+          ) : (
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {cardsData?.data?.totalProducts}
+              </div>
+              {/* <p className="text-xs text-muted-foreground">
+                +201 since last hour
+              </p> */}
+            </CardContent>
+          )}
         </Card>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
