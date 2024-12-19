@@ -5,14 +5,8 @@ import { formatDate_util, moneyFormatter } from "@/app/utils/index";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { ArrowUpDown } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
+import { OrderViewModal } from "./OrderViewModal";
+import { useState } from "react";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -113,25 +107,22 @@ export const columns: ColumnDef<Order>[] = [
   },
 
   {
-    accessorKey: "actions",
-    header: "Actions",
-    cell: () => {
+    id: "actions",
+    cell: ({ row }) => {
+      const order = row.original;
+      const [open, setOpen] = useState(false);
+
       return (
         <div className="text-center">
-          <Dialog>
-            <DialogTrigger className="border p-1 rounded-md text-xs font-medium">
-              View
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Order title</DialogTitle>
-                <DialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your account and remove your data from our servers.
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setOpen(true)}
+            className="h-8 px-2 lg:px-3"
+          >
+            View
+          </Button>
+          <OrderViewModal order={order} open={open} onOpenChange={setOpen} />
         </div>
       );
     },

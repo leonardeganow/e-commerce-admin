@@ -8,14 +8,22 @@ import { useGetDashboardData } from "@/hooks/dashboardHook";
 import { useState } from "react";
 import { moneyFormatter } from "../utils";
 import { Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DashboardPage() {
   const [date, setDate] = useState({
-    from: new Date(2024, 0, 20),
-    to: new Date(2024, 0, 20),
+    from: new Date(),
+    to: new Date(),
   });
 
-  const [cardsData] = useGetDashboardData(date);
+  //get current year
+  const getYear = new Date().getFullYear();
+
+  const currentYear = getYear.toString();
+
+  const [cardsData, salesOverview, userSignupsData, recentOrders] =
+    useGetDashboardData(date, currentYear);
+
 
   return (
     <div className="flex-1 space-y-4 p-10   w-full">
@@ -46,7 +54,7 @@ export default function DashboardPage() {
           </CardHeader>
           {cardsData?.isLoading ? (
             <CardContent>
-              <Loader2 className="animate-spin h-5 w-5" />
+              <Skeleton className="h-8 w-full"></Skeleton>
             </CardContent>
           ) : cardsData?.isError ? (
             <CardContent>- </CardContent>
@@ -79,7 +87,7 @@ export default function DashboardPage() {
           </CardHeader>
           {cardsData?.isLoading ? (
             <CardContent>
-              <Loader2 className="animate-spin h-5 w-5" />
+              <Skeleton className="h-8 w-full"></Skeleton>
             </CardContent>
           ) : cardsData?.isError ? (
             <CardContent>- </CardContent>
@@ -113,7 +121,7 @@ export default function DashboardPage() {
           </CardHeader>
           {cardsData?.isLoading ? (
             <CardContent>
-              <Loader2 className="animate-spin h-5 w-5" />
+              <Skeleton className="h-8 w-full"></Skeleton>
             </CardContent>
           ) : cardsData?.isError ? (
             <CardContent>- </CardContent>
@@ -150,7 +158,7 @@ export default function DashboardPage() {
           </CardHeader>
           {cardsData?.isLoading ? (
             <CardContent>
-              <Loader2 className="animate-spin h-5 w-5" />
+              <Skeleton className="h-8 w-full"></Skeleton>
             </CardContent>
           ) : cardsData?.isError ? (
             <CardContent>- </CardContent>
@@ -169,19 +177,31 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4">
           <CardHeader>
-            <CardTitle>Overview</CardTitle>
+            <CardTitle>Sales Overview</CardTitle>
           </CardHeader>
-          <CardContent className="pl-2">
-            <Overview />
-          </CardContent>
+          {salesOverview.isLoading ? (
+            <CardContent>
+              <Skeleton className="h-[350px] w-full"></Skeleton>
+            </CardContent>
+          ) : (
+            <CardContent className="pl-2">
+              <Overview data={salesOverview?.data?.salesData} />
+            </CardContent>
+          )}
         </Card>
         <Card className="sm:col-span-3 col-span-fulls">
           <CardHeader>
             <CardTitle>User Signups</CardTitle>
           </CardHeader>
-          <CardContent className="pl-2">
-            <UserSignups />
-          </CardContent>
+          {userSignupsData?.isLoading ? (
+            <CardContent>
+              <Skeleton className="h-[350px] w-full"></Skeleton>
+            </CardContent>
+          ) : (
+            <CardContent className="pl-2">
+              <UserSignups data={userSignupsData?.data?.userSignupsData} />
+            </CardContent>
+          )}
         </Card>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
@@ -190,7 +210,7 @@ export default function DashboardPage() {
             <CardTitle>Recent Orders</CardTitle>
           </CardHeader>
           <CardContent>
-            <RecentOrders />
+            <RecentOrders data={recentOrders?.data?.orders} />
           </CardContent>
         </Card>
       </div>

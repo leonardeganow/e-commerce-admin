@@ -25,3 +25,48 @@ export const getDashboardDataAction = async (date) => {
         return response.data;
     }
 }
+export const getSalesOverviewAction = async (year) => {
+
+    const response = await axios.post(
+        `${DEV_SERVER_URL}/dashboard/salesoverview`
+        , { year }
+    );
+
+    if (response.status === 200) {
+        return response.data;
+    }
+}
+export const getUserSignUpsActions = async (year) => {
+
+    const response = await axios.post(
+        `${DEV_SERVER_URL}/dashboard/usersignups`
+        , { year }
+    );
+
+    if (response.status === 200) {
+        return response.data;
+    }
+}
+export const getRecentOrdersAction = async () => {
+
+    const response = await axios.get(
+        `${DEV_SERVER_URL}/dashboard/getrecentorders`
+    );
+
+    if (response.status === 200) {
+        return response.data;
+    }
+}
+
+export const handleOrderStatusChange = async (orderId: string, orderStatus: string) => {
+    const response = await axios.post(
+        `${DEV_SERVER_URL}/order/changeorderstatus`,
+        {
+            orderId, orderStatus
+        }
+    );
+
+    if (response.status === 200) {
+        return response.data;
+    }
+}
