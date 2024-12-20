@@ -4,12 +4,15 @@ import { AddEditProductForm } from "@/components/products/add-new-product";
 import { AllProducts } from "@/components/products/all-products";
 import { CategoriesManagement } from "@/components/products/categories-management";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import productStore from "@/store/productStore";
 import { Product } from "@/types/global";
 import { useState } from "react";
 
 export default function ProductsPage() {
-  const [activeTab, setActiveTab] = useState("all-products");
-  const [product, setProduct] = useState<Product | undefined>();
+  // const [activeTab, setActiveTab] = useState("all-products");
+  // const [product, setProduct] = useState<Product | undefined>();
+
+  const { activeTab, setActiveTab ,product,setProduct } = productStore()
 
   return (
     <div className="container mx-auto p-10">

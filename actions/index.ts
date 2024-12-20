@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DEV_SERVER_URL } from "@/app/constants";
 import axios from "axios";
 
@@ -11,7 +12,7 @@ export const fetchOrdersAction = async () => {
     }
 };
 
-export const getDashboardDataAction = async (date) => {
+export const getDashboardDataAction = async (date: { from: any; to: any; }) => {
 
     const response = await axios.post(
         `${DEV_SERVER_URL}/dashboard/getanalytics`
@@ -25,7 +26,7 @@ export const getDashboardDataAction = async (date) => {
         return response.data;
     }
 }
-export const getSalesOverviewAction = async (year) => {
+export const getSalesOverviewAction = async (year: string) => {
 
     const response = await axios.post(
         `${DEV_SERVER_URL}/dashboard/salesoverview`
@@ -36,7 +37,7 @@ export const getSalesOverviewAction = async (year) => {
         return response.data;
     }
 }
-export const getUserSignUpsActions = async (year) => {
+export const getUserSignUpsActions = async (year: string) => {
 
     const response = await axios.post(
         `${DEV_SERVER_URL}/dashboard/usersignups`
@@ -68,5 +69,39 @@ export const handleOrderStatusChange = async (orderId: string, orderStatus: stri
 
     if (response.status === 200) {
         return response.data;
+    }
+}
+
+export const handleRefundAction = async (orderId: string, refundAmount: number) => {
+    const response = await axios.post(
+        `${DEV_SERVER_URL}/order/refundorder`,
+        {
+            orderId, refundAmount
+        }
+    );
+
+    if (response.status === 200) {
+        return response.data;
+    }
+}
+
+
+export const deleteProductAction = async (productId: string ) => {
+    const response = await axios.delete(
+        `${DEV_SERVER_URL}/product/products/${productId}`
+    );
+    if (response.status === 200) {
+        return response.data;
+    }
+}
+
+
+
+export const fetchAllProductsAction = async () => {
+    const response = await axios.get(
+        `${DEV_SERVER_URL}/product/products/allproducts`
+    );
+    if (response.status === 200) {
+        return response?.data?.productsWithCategoryNames;
     }
 }

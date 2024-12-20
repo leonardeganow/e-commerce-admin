@@ -181,8 +181,11 @@ export function CategoriesManagement(props: CatgoriesManagementProps) {
   };
 
   useEffect(() => {
-    props.setProduct(undefined);
-  }, [props]);
+    if (props) {
+      props.setProduct(undefined);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isLoading) {
     return (

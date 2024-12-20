@@ -140,14 +140,18 @@ export function AppSidebar() {
             alignOffset={-8}
             className="w-[200px] p-2"
           >
-            <DropdownMenuItem className="cursor-pointer hover:bg-cyan-50">
-              <User2 className="mr-2 h-4 w-4 text-cyan-500" />
-              <span>Account</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer hover:bg-cyan-50">
-              <Settings className="mr-2 h-4 w-4 text-cyan-500" />
-              <span>Settings</span>
-            </DropdownMenuItem>
+            <Link href="/dashboard/account">
+              <DropdownMenuItem className="cursor-pointer hover:bg-cyan-50">
+                <User2 className="mr-2 h-4 w-4 text-cyan-500" />
+                <span>Account</span>
+              </DropdownMenuItem>
+            </Link>
+            <Link href="/dashboard/settings">
+              <DropdownMenuItem className="cursor-pointer hover:bg-cyan-50">
+                <Settings className="mr-2 h-4 w-4 text-cyan-500" />
+                <span>Settings</span>
+              </DropdownMenuItem>
+            </Link>
             <Separator className="my-2" />
             <DropdownMenuItem
               className="cursor-pointer text-red-600 hover:bg-red-50"

@@ -34,7 +34,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { useChangeOrderStatus } from "@/hooks/orderHook";
+import { useChangeOrderStatus, useRefund } from "@/hooks/orderHook";
 // import { updateOrderStatus } from "@/app/api/orders"
 // import { toast } from "@/components/ui/use-toast"
 
@@ -53,6 +53,8 @@ export function OrderViewModal({
 
   const { mutate: handleStatusChange, isPending } =
     useChangeOrderStatus(setStatus);
+
+  const { mutate: handleRefund, isPending: refundLoader } = useRefund();
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -141,6 +143,22 @@ export function OrderViewModal({
             />
           </div>
           <div className="space-y-2">
+            {status !== "refunded" && (
+              <Button
+                disabled={refundLoader}
+                onClick={() =>
+                  handleRefund({
+                    orderId: order._id,
+                    refundAmount: order.totalAmount,
+                  })
+                }
+                className="bg-yellow-500"
+              >
+                Refund Customer
+              </Button>
+            )}
+          </div>
+          <div className="space-y-2">
             <span className="font-medium text-gray-700 flex items-center gap-2">
               Order Status:{" "}
               {isPending && <Loader2 className="animate-spin h-2 w-2 " />}{" "}
@@ -156,25 +174,62 @@ export function OrderViewModal({
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="cancelled">
+                <SelectItem value="refunded" disabled>
+                  <div className="flex items-center">
+                    <XCircle className="h-4 w-4 text-red-500 mr-2" />
+                    Refunded
+                  </div>
+                </SelectItem>
+                <SelectItem
+                  value="cancelled"
+                  disabled={
+                    status === "delivered" ||
+                    status === "shipped" ||
+                    status === "cancelled" ||
+                    status === "refunded"
+                  }
+                >
                   <div className="flex items-center">
                     <XCircle className="h-4 w-4 text-red-500 mr-2" />
                     cancelled
                   </div>
                 </SelectItem>
-                <SelectItem value="processing">
+                <SelectItem
+                  value="processing"
+                  disabled={
+                    status === "delivered" ||
+                    status === "shipped" ||
+                    status === "cancelled" ||
+                    status === "refunded"
+                  }
+                >
                   <div className="flex items-center">
                     <ClockArrowDown className="h-4 w-4 text-yellow-500 mr-2" />
                     Processing
                   </div>
                 </SelectItem>
-                <SelectItem value="shipped">
+                <SelectItem
+                  value="shipped"
+                  disabled={
+                    status === "delivered" ||
+                    status === "cancelled" ||
+                    status === "refunded"
+                  }
+                >
                   <div className="flex items-center">
                     <Truck className="h-4 w-4 text-blue-500 mr-2" />
                     shipped
                   </div>
                 </SelectItem>
-                <SelectItem value="delivered">
+                <SelectItem
+                  value="delivered"
+                  disabled={
+                    status === "delivered" ||
+                    status === "cancelled" ||
+                    status === "processing" ||
+                    status === "refunded"
+                  }
+                >
                   <div className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
                     delivered

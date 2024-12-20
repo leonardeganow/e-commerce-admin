@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
@@ -21,7 +22,7 @@ export type Order = {
   date: string;
 };
 
-export const columns: ColumnDef<Order>[] = [
+export const Columns: ColumnDef<Order>[] = [
   {
     accessorKey: "_id",
     header: "order Id",
@@ -34,6 +35,8 @@ export const columns: ColumnDef<Order>[] = [
   },
   {
     accessorKey: "user.name",
+    enableColumnFilter: true,
+    filterFn: "includesString",
     header: () => {
       return <Button variant="ghost">Name</Button>;
     },
@@ -65,7 +68,11 @@ export const columns: ColumnDef<Order>[] = [
       return (
         <Badge
           className={`text-center  text-ellipsis truncate ${
-            text === "success" ? "bg-green-500 text-white" : ""
+            text === "success"
+              ? "bg-green-500 text-white"
+              : text === "refunded"
+              ? "bg-yellow-500 text-white"
+              : ""
           }`}
         >
           {text}
@@ -84,6 +91,26 @@ export const columns: ColumnDef<Order>[] = [
   {
     accessorKey: "orderStatus",
     header: "Order Status",
+    cell: ({ row }) => {
+      const text: string = row.getValue("orderStatus");
+      return (
+        <Badge
+          className={`text-center  text-ellipsis truncate ${
+            text === "shipped"
+              ? "bg-blue-500 text-white"
+              : text === "cancelled"
+              ? "bg-red-500"
+              : text === "refunded"
+              ? "bg-yellow-500"
+              : text === "delivered"
+              ? "bg-green-500"
+              : ""
+          }`}
+        >
+          {text}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "createdAt",

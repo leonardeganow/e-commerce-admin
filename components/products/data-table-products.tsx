@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React from "react";
@@ -23,12 +24,24 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { Loader } from "lucide-react";
 
-export default function DataTable({ columns, data }) {
+export default function DataTableProducts({
+  columns,
+  data,
+  isRefetching,
+}: any) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
 
   const table = useReactTable({
     data,
@@ -46,28 +59,36 @@ export default function DataTable({ columns, data }) {
   });
 
   return (
-    <Card className="w-full shadow-lg">
+    <Card className="w-full shadow-lg relative">
       <CardHeader>
         <div className="flex items-center space-x-2">
           <Search className="text-gray-400" />
           <Input
             placeholder="Filter by name..."
-            value={table.getColumn("user_name")?.getFilterValue() as string}
+            value={table.getColumn("name")?.getFilterValue() as string}
             onChange={(event) =>
-              table.getColumn("user_name")?.setFilterValue(event.target.value)
+              table.getColumn("name")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
         </div>
       </CardHeader>
-      <CardContent className="p-0">
-        <div className=" border-t border-b">
+      <CardContent className="p-0 relative">
+        <div className="border-t border-b relative">
+          {isRefetching && (
+            <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10">
+              <Loader className="animate-spin h-8 w-8 text-gray-500" />
+            </div>
+          )}
           <Table>
             <TableHeader className="bg-gray-100">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id} className="font-bold text-gray-700">
+                    <TableHead
+                      key={header.id}
+                      className="font-bold text-gray-700"
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -89,14 +110,20 @@ export default function DataTable({ columns, data }) {
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
                       </TableCell>
                     ))}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
                     No results.
                   </TableCell>
                 </TableRow>
@@ -133,4 +160,3 @@ export default function DataTable({ columns, data }) {
     </Card>
   );
 }
-

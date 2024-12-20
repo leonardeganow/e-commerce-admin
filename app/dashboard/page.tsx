@@ -1,20 +1,47 @@
 "use client";
 import { DateRangePicker } from "@/components/dashboardHome/date-range-picker";
 import { Overview } from "@/components/dashboardHome/overview";
-import { RecentOrders } from "@/components/dashboardHome/recet-orders";
+import { RecentOrders } from "@/components/dashboardHome/recent-orders";
 import { UserSignups } from "@/components/dashboardHome/user-signups";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetDashboardData } from "@/hooks/dashboardHook";
 import { useState } from "react";
 import { moneyFormatter } from "../utils";
-import { Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DashboardPage() {
-  const [date, setDate] = useState({
-    from: new Date(),
-    to: new Date(),
-  });
+  const getTodayRange = () => {
+    const now = new Date();
+
+    // Start of today (midnight)
+    const startOfDay = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    );
+    const startOfDayString = `${startOfDay.getFullYear()}-${String(
+      startOfDay.getMonth() + 1
+    ).padStart(2, "0")}-${String(startOfDay.getDate()).padStart(
+      2,
+      "0"
+    )} 00:00:00`;
+
+    // Current time today
+    const currentTimeString = `${now.getFullYear()}-${String(
+      now.getMonth() + 1
+    ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")} ${String(
+      now.getHours()
+    ).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(
+      now.getSeconds()
+    ).padStart(2, "0")}`;
+
+    return {
+      from: startOfDayString,
+      to: currentTimeString,
+    };
+  };
+
+  const [date, setDate] = useState(getTodayRange());
 
   //get current year
   const getYear = new Date().getFullYear();
@@ -23,7 +50,6 @@ export default function DashboardPage() {
 
   const [cardsData, salesOverview, userSignupsData, recentOrders] =
     useGetDashboardData(date, currentYear);
-
 
   return (
     <div className="flex-1 space-y-4 p-10   w-full">
@@ -130,7 +156,7 @@ export default function DashboardPage() {
               <div className="text-2xl font-bold">
                 {cardsData?.data?.totalSales === 0
                   ? `${cardsData?.data?.totalSales}`
-                  : `+${cardsData?.data?.totalSales}`}
+                  : `+ ${cardsData?.data?.totalSales}`}
               </div>
               {/* <p className="text-xs text-muted-foreground">
                 +19% from last month
@@ -209,9 +235,15 @@ export default function DashboardPage() {
           <CardHeader>
             <CardTitle>Recent Orders</CardTitle>
           </CardHeader>
-          <CardContent>
-            <RecentOrders data={recentOrders?.data?.orders} />
-          </CardContent>
+          {recentOrders.isLoading ? (
+            <div className="p-5">
+              <Skeleton className="h-10 w-full" />
+            </div>
+          ) : (
+            <CardContent>
+              <RecentOrders data={recentOrders?.data?.orders} />
+            </CardContent>
+          )}
         </Card>
       </div>
     </div>

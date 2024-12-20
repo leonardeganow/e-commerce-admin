@@ -1,8 +1,9 @@
 "use client";
+
 import DataTable from "./data-table";
-import { columns } from "./columns";
 import { useGetOrders } from "@/hooks/orderHook";
-import { Loader2 } from "lucide-react";
+import { Loader2, ShoppingCart } from 'lucide-react';
+import { Columns } from "./columns";
 
 export function OrdersPage() {
   const { data, isLoading, isError } = useGetOrders();
@@ -16,14 +17,24 @@ export function OrdersPage() {
   }
 
   if (isError) {
-    return <p>Error: an error occured</p>;
+    return <p>Error: an error occurred</p>;
   }
+
   return (
-    <div className="container mx-auto  p-10">
-      <h1 className="text-3xl font-bold mb-6">Orders</h1>
+    <div className="container mx-auto p-10">
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex items-center">
+          <ShoppingCart className="h-8 w-8 mr-4" />
+          <h1 className="text-3xl font-bold">Orders</h1>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Manage and track your customer orders
+        </p>
+      </div>
       <div>
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={Columns} data={data} />
       </div>
     </div>
   );
 }
+
