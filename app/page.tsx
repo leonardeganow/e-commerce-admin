@@ -1,9 +1,12 @@
-import LoginForm from "./components/LoginForm";
+"use client";
 
-export default function Home() {
+import LoginForm from "@/components/forms/LoginForm";
+import { Suspense } from "react";
+
+export default function LoginPage() {
   return (
-    <div >
-<LoginForm/>
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }
