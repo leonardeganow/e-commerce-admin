@@ -5,14 +5,8 @@ import { AllProducts } from "@/components/products/all-products";
 import { CategoriesManagement } from "@/components/products/categories-management";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import productStore from "@/store/productStore";
-import { Product } from "@/types/global";
-import { useState } from "react";
-
 export default function ProductsPage() {
-  // const [activeTab, setActiveTab] = useState("all-products");
-  // const [product, setProduct] = useState<Product | undefined>();
-
-  const { activeTab, setActiveTab ,product,setProduct } = productStore()
+  const { activeTab, setActiveTab, product, setProduct } = productStore();
 
   return (
     <div className="container mx-auto p-10">
@@ -43,15 +37,9 @@ export default function ProductsPage() {
         <TabsContent value="add/edit-new-product">
           <AddEditProductForm product={product} setProduct={setProduct} />
         </TabsContent>
-        {/* <TabsContent value="low-stock-alerts">
-          <LowStockAlerts />
-        </TabsContent> */}
         <TabsContent value="categories-management">
           <CategoriesManagement setProduct={setProduct} />
         </TabsContent>
-        {/* <TabsContent value="product-bundling">
-          <ProductBundling />
-        </TabsContent> */}
       </Tabs>
     </div>
   );

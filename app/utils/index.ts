@@ -1,10 +1,15 @@
-import { format } from "date-fns";
 
-const moneyFormatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "GHS",
-  minimumFractionDigits: 2,
-});
+export function moneyFormatter(amount) {
+  const formatMoney = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "GHS",
+    minimumFractionDigits: 2,
+  });
+
+  return formatMoney.format(amount);
+}
+
+import { format } from "date-fns";
 
 export const formatDate_util = (date: string, pattern: string) => {
   try {
@@ -17,4 +22,4 @@ export const formatDate_util = (date: string, pattern: string) => {
     console.error(error);
   }
 };
-export { moneyFormatter };
+

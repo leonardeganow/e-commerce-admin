@@ -41,7 +41,6 @@ export function AllProducts(props: AllProductsProps) {
   return (
     <div className="space-y-4">
       <div className="flex justify-end items-center gap-3">
-        <Button>Export to CSV</Button>
         <Button onClick={() => refetch()} variant={"outline"}>
           <RefreshCcwIcon />
         </Button>

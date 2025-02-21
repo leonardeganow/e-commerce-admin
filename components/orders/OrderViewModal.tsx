@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -110,7 +111,7 @@ export function OrderViewModal({
             <InfoCard
               icon={<CreditCard className="h-5 w-5 text-blue-500" />}
               title="Total Amount"
-              value={moneyFormatter.format(order.totalAmount)}
+              value={moneyFormatter(order.totalAmount)}
               valueClassName="text-lg font-bold text-green-600"
             />
             <InfoCard
@@ -248,6 +249,7 @@ export function OrderViewModal({
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
+                 
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Product
                     </th>
@@ -266,17 +268,25 @@ export function OrderViewModal({
                   {order.items.map((item: OrderItem) => {
                     return (
                       <tr key={item._id}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 flex gap-2">
+                        <img
+                              src={item.product.image}
+                              alt="product image"
+                              width={5}
+                              height={5}
+                              className="h-5 w-5 object-cover rounded-full"
+                            />
                           {item.product.name}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {item.quantity}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {moneyFormatter.format(item.price)}
+                          {moneyFormatter(item.price)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {moneyFormatter.format(item.price * item.quantity)}
+                          {moneyFormatter(item.price * item.quantity)}
                         </td>
                       </tr>
                     );

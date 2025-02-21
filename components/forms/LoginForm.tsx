@@ -78,13 +78,7 @@ export default function LoginForm() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <div className="flex justify-center mb-4 text-2xl font-bold uppercase">
-            {/* <Image
-              src="/placeholder.svg?height=64&width=64"
-              alt="Logo"
-              width={64}
-              height={64}
-              className="rounded-full"
-            /> */}
+     
             admin
           </div>
           <CardTitle className=" text-center text-gray-500">

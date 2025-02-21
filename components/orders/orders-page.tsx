@@ -2,7 +2,7 @@
 
 import DataTable from "./data-table";
 import { useGetOrders } from "@/hooks/orderHook";
-import { Loader2, ShoppingCart } from 'lucide-react';
+import { Loader2, ShoppingCart } from "lucide-react";
 import { Columns } from "./columns";
 
 export function OrdersPage() {
@@ -37,4 +37,3 @@ export function OrdersPage() {
     </div>
   );
 }
-

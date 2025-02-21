@@ -56,7 +56,7 @@ export const Columns: ColumnDef<Order>[] = [
     },
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("totalAmount"));
-      const formatted = moneyFormatter.format(amount);
+      const formatted = moneyFormatter(amount);
       return <div className="">{formatted}</div>;
     },
   },

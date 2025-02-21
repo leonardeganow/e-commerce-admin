@@ -32,6 +32,7 @@ import { DEV_SERVER_URL } from "@/app/constants";
 import { Category, Product } from "@/types/global";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
+import { getRandomValues } from "node:crypto";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -54,13 +55,6 @@ const formSchema = z.object({
   }),
   // image: z.string(),
   image: z.any(),
-
-  colors: z
-    .array(z.string())
-    .nonempty({ message: "At least one color is required." }),
-  sizes: z
-    .array(z.string())
-    .nonempty({ message: "At least one size is required." }),
 });
 
 interface AddEditProductFormProps {
@@ -113,8 +107,12 @@ export function AddEditProductForm(props: AddEditProductFormProps) {
     }
   }
 
+  console.log(form.formState.errors);
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
+    console.log(values);
+    console.log("value");
 
     try {
       if (props.product) {
@@ -154,45 +152,63 @@ export function AddEditProductForm(props: AddEditProductFormProps) {
             description: response?.data.message,
           });
         }
-      } else {
-        const productData = {
-          name: values.name,
-          description: values.description,
-          price: values.price,
-          currency: values.currency,
-          stock: values.stock,
-          featured: values.featured,
-          categoryId: values.category,
-          image: imagePreview,
-          colors: colors,
-          sizes: sizes,
-        };
+      }
 
-        const response = await axios.post(
-          `${DEV_SERVER_URL}/product/addproduct`,
-          productData
-        );
+      if (!imagePreview) {
+        toast({
+          title: "Error adding product",
+          description: "Please select an image for the product.",
+        });
+        setIsLoading(false);
+        return;
+      }
 
-        setIsLoading(true);
+      if (sizes?.length !== 1 || colors?.length !== 1) {
+        toast({
+          title: "Error adding product",
+          description:
+            "Please select at least one color and size for the product.",
+        });
+        setIsLoading(false);
+        return;
+      }
 
-        if (response.status === 201) {
-          setIsLoading(false);
-          form.reset();
-          setColors([]);
-          setSizes([]);
-          setImagePreview(null);
-          const fileInput = document.querySelector(
-            'input[type="file"]'
-          ) as HTMLInputElement;
-          if (fileInput) {
-            fileInput.value = "";
-          }
+ 
+      const productData = {
+        name: values.name,
+        description: values.description,
+        price: values.price,
+        currency: values.currency,
+        stock: values.stock,
+        featured: values.featured,
+        categoryId: values.category,
+        image: imagePreview,
+        colors: colors,
+        sizes: sizes,
+      };
 
-          toast({
-            title: "Product added successfully",
-            description: response?.data.message,
-          });
+      const response = await axios.post(
+        `${DEV_SERVER_URL}/product/addproduct`,
+        productData
+      );
+
+      if (response.status === 201) {
+        setIsLoading(false);
+        form.reset();
+        setColors([]);
+        setSizes([]);
+        setImagePreview(null);
+        const fileInput = document.querySelector(
+          'input[type="file"]'
+        ) as HTMLInputElement;
+        if (fileInput) {
+          fileInput.value = "";
         }
+
+        toast({
+          title: "Product added successfully",
+          description: response?.data.message,
+        });
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -510,48 +526,10 @@ export function AddEditProductForm(props: AddEditProductFormProps) {
           </div>
         </div>
         <Button disabled={isLoading} type="submit">
-          {isLoading ? (
-            <span className="flex items-center gap-x-2">
-              <Loader2 className="animate-spin h-2 w-2" />
-              loading
-            </span>
-          ) : props.product ? (
-            "Edit Product"
-          ) : (
-            "Add Product"
-          )}
+          {isLoading ? <Loader2 className="animate-spin mr-2" /> : null}
+          {props.product ? "Update Product" : "Add Product"}
         </Button>
       </form>
     </Form>
   );
 }
-
-// function ImageDropzone({ onImageChange }) {
-//   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-//     accept: {
-//       "image/*": [".jpeg", ".png", ".webp"],
-//     },
-//     maxSize: MAX_FILE_SIZE,
-//     onDrop: (acceptedFiles) => {
-//       if (acceptedFiles.length > 0) {
-//         onImageChange(acceptedFiles[0]);
-//       }
-//     },
-//   });
-
-//   return (
-//     <div
-//       {...getRootProps()}
-//       className={`border-2 border-dashed rounded-md p-4 text-center cursor-pointer ${
-//         isDragActive ? "border-primary" : "border-gray-300"
-//       }`}
-//     >
-//       <input {...getInputProps()} />
-//       {isDragActive ? (
-//         <p>Drop the image here ...</p>
-//       ) : (
-//         <p>Drag &lsquo;n&apos; drop an image here, or click to select one</p>
-//       )}
-//     </div>
-//   );
-// }

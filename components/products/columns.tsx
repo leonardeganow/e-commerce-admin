@@ -18,6 +18,7 @@ import {
 } from "../ui/alert-dialog";
 import { useDeleteProduct } from "@/hooks/productHook";
 import { Badge } from "../ui/badge";
+import { moneyFormatter } from "@/app/utils";
 
 export const columns = [
   {
@@ -26,7 +27,7 @@ export const columns = [
   },
   {
     accessorKey: "image",
-    header: "Product Image",
+    header: "Image",
     cell: ({ row }: any) => {
       const image = row.original.image;
       return (
@@ -42,7 +43,14 @@ export const columns = [
       );
     },
   },
-  { accessorKey: "price", header: "Price" },
+  {
+    accessorKey: "price",
+    header: "Price",
+    cell: ({ row }: any) => {
+      const price = row.original.price;
+      return <div className=" ">{moneyFormatter(price)}</div>;
+    },
+  },
   {
     accessorKey: "stock",
     header: "Stock",
@@ -50,7 +58,11 @@ export const columns = [
       const stock = row.original.stock;
       return (
         <div className=" ">
-         {stock === 0 ? <Badge variant={"destructive"}>Out of stock</Badge> : stock}
+          {stock === 0 ? (
+            <Badge variant={"destructive"}>Out of stock</Badge>
+          ) : (
+            stock
+          )}
         </div>
       );
     },
@@ -66,7 +78,7 @@ export const columns = [
       const { mutate, isPending } = useDeleteProduct();
 
       return (
-        <div className="space-x-2">
+        <div className="space-x-2 flex items-center">
           <Button
             onClick={() => {
               setProduct(product);

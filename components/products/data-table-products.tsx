@@ -25,7 +25,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Card,
   CardContent,
   CardFooter,
   CardHeader,
@@ -59,7 +58,7 @@ export default function DataTableProducts({
   });
 
   return (
-    <Card className="w-full shadow-lg relative">
+    <div className="">
       <CardHeader>
         <div className="flex items-center space-x-2">
           <Search className="text-gray-400" />
@@ -74,7 +73,7 @@ export default function DataTableProducts({
         </div>
       </CardHeader>
       <CardContent className="p-0 relative">
-        <div className="border-t border-b relative">
+        <div className=" relative">
           {isRefetching && (
             <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10">
               <Loader className="animate-spin h-8 w-8 text-gray-500" />
@@ -157,6 +156,6 @@ export default function DataTableProducts({
           </Button>
         </div>
       </CardFooter>
-    </Card>
+    </div>
   );
 }

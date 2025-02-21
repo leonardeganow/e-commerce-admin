@@ -32,8 +32,9 @@
     "framer-motion": "^11.15.0",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.468.0",
-    "next": "14.2.15",
+    "next": "14.2.3",
     "react": "^18",
+    "react-chartjs-2": "^5.2.0",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18",
     "react-dropzone": "^14.3.5",
@@ -43,15 +44,18 @@
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.8",
-    "zustand": "^5.0.2"
+    "zustand": "^5.0.2",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
-    "@types/react": "^18",
+    "@types/react": "^19.0.2",
     "@types/react-dom": "^18",
+    "@types/zxcvbn": "^4.4.5",
     "eslint": "^8",
     "eslint-config-next": "14.2.15",
+    "mini-css-extract-plugin": "^2.9.2",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"

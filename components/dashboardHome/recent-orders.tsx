@@ -40,7 +40,7 @@ export function RecentOrders({ data }) {
                   <TableCell>{order?.items[0]?.product?.name}</TableCell>
                   <TableCell>{order?.user?.name}</TableCell>
                   <TableCell>
-                    {moneyFormatter.format(order.totalAmount)}
+                    {moneyFormatter(order.totalAmount)}
                   </TableCell>
                   <TableCell>
                     {order.orderStatus === "shipped" ? (

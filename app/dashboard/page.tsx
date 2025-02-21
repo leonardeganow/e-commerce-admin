@@ -6,8 +6,8 @@ import { UserSignups } from "@/components/dashboardHome/user-signups";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetDashboardData } from "@/hooks/dashboardHook";
 import { useState } from "react";
-import { moneyFormatter } from "../utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { moneyFormatter } from "../utils";
 
 export default function DashboardPage() {
   const getTodayRange = () => {
@@ -120,7 +120,7 @@ export default function DashboardPage() {
           ) : (
             <CardContent>
               <div className="text-2xl font-bold">
-                {moneyFormatter.format(cardsData?.data?.totalRevenue)}
+                {moneyFormatter(cardsData?.data?.totalRevenue)}
               </div>
               {/* <p className="text-xs text-muted-foreground">
                 +20.1% from last month

@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { addDays, format } from "date-fns";
-import { DateRange } from "react-day-picker";
+import { format } from "date-fns";
+// import { DateRange } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,8 @@ import { Calendar1Icon } from "lucide-react";
 export function DateRangePicker({
   className,
   setDate,date
-}: React.HTMLAttributes<HTMLDivElement>) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+}: any) {
 
 
   return (

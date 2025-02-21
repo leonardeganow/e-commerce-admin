@@ -5,7 +5,6 @@ import {
   ChevronDown,
   ChevronUp,
   Home,
-  Settings,
   User2,
   BarChart,
   Users,
@@ -69,7 +68,7 @@ export function AppSidebar() {
         <div className="flex items-center space-x-2">
           <Avatar className="h-10 w-10">
             <AvatarImage src="/logo.svg" alt="Company Logo" />
-            <AvatarFallback>BD</AvatarFallback>
+            {/* <AvatarFallback>BD</AvatarFallback> */}
           </Avatar>
           <span className="text-xl font-bold text-cyan-700">AdminPanel</span>
         </div>
@@ -146,12 +145,7 @@ export function AppSidebar() {
                 <span>Account</span>
               </DropdownMenuItem>
             </Link>
-            <Link href="/dashboard/settings">
-              <DropdownMenuItem className="cursor-pointer hover:bg-cyan-50">
-                <Settings className="mr-2 h-4 w-4 text-cyan-500" />
-                <span>Settings</span>
-              </DropdownMenuItem>
-            </Link>
+
             <Separator className="my-2" />
             <DropdownMenuItem
               className="cursor-pointer text-red-600 hover:bg-red-50"
